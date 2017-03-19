@@ -1,0 +1,77 @@
+
+
+<div id="date">
+Masina kellaaeg: <b><span id="date_value">
+</span></b>
+</div>
+
+<br>
+
+<div id="nextJob">
+Järgmine tegevus kella poolt on:<b> <span id="job_value">
+</span></b>
+</div>
+
+<br>
+
+<div id="table_state">
+Tundide seadistus:<b> <span id="table_state_value">
+</span></b>
+</div>
+
+<br>
+
+Kooliraadio on: <b><span id="line_in_state"></span></b>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  setInterval(function(){
+    $.get("?page=system_time").done(function(data){
+      var json_data = JSON.parse(data);
+      $("#date_value").html(json_data.time);
+    });
+  }, 1000);
+});
+
+$(document).ready(function(){
+  setInterval(function(){
+    $.get("?page=nextjob").done(function(data){
+    var json_data = JSON.parse(data);
+    if (json_data.job == ""){
+      $("#job_value").html("Puudub. Kas tunnid on seadistatud?");
+    }
+    else {
+      $("#job_value").html(json_data.job);
+    }
+    });
+  }, 2000);
+});
+
+
+$(document).ready(function(){
+  setInterval(function(){
+    $.get("?page=table_state").done(function(data){
+      var json_data = JSON.parse(data);
+      $("#table_state_value").html(json_data.table_state);
+    });
+  }, 1000);
+});
+
+$(document).ready(function(){
+  setInterval(function(){
+    $.get("?page=line_in").done(function(data){
+      var json_data = JSON.parse(data);
+      if (json_data.state == "on"){
+        $("#line_in_state").html("aktiveeritud");
+      }
+      else {
+        $("#line_in_state").html("vaigistatud");
+      }
+
+    });
+  }, 1000);
+});
+
+</script>

@@ -1,0 +1,136 @@
+<b>Signaalide helitugevuse määramine</b>
+<hr>
+
+<?php
+  $schoolbellUser = exec("whoami");
+  $workDir = "/home/$schoolbellUser/ding_conf";
+  $start_vol = exec("bash $workDir/scripts/start_volume.sh 2>&1");
+  $end_vol = exec("$workDir/scripts/end_volume.sh 2>&1");
+  if ($start_vol == null || $end_vol == null){
+    $start_vol = 0;
+    $end_vol = 0;
+  }
+  $line_vol = exec("$workDir/scripts/get_line_volume.sh 2>&1");
+?>
+
+
+<form method="post">
+Algusheli (protsentides):
+<input type="range" name="start_melody_range" min="0" step="5" max="100" onchange="updateStartVol(this.value);" value="<?php echo $start_vol; ?>">
+<input type="text" id="start_melody_text" value="<?php echo $start_vol; ?>" readonly>
+<br>
+<input type="submit" value="Kinnita" />
+</form>
+
+<br>
+
+<form method="post">
+Lõpuheli (protsentides):
+<input type="range" name="end_melody_range" min="0" step="5" max="100" onchange="updateEndVol(this.value);" value="<?php echo $end_vol; ?>">
+<input type="text" id="end_melody_text" value="<?php echo $end_vol; ?>" readonly>
+<br>
+<input type="submit" value="Kinnita" />
+</form>
+
+<br>
+<br>
+<br>
+
+<b>Signaalide helitugevuse määramine</b>
+<hr>
+<form action="?page=upload" method="post"
+enctype="multipart/form-data">
+<label for="file">Vali vastav helifail (algussignaal või lõppsignaal):</label>
+<input type="file" name="file" id="file"><br>
+<input type="submit" name="submit" value="Salvesta">
+</form>
+<br>
+NB! Helifail peab olema mp3 vormingus. Algussignaali nimi peab olema <i>start.mp3</i> ja lõppsignaali nimi peab olema <i>end.mp3</i>. Äkkrünnaku sireeni nimi peab olema <i>alarm.mp3</i>.
+
+<br>
+<br>
+<br>
+
+<b><i>Line in</i> sisendi helitugevuse määramine (kooliraadio)</b>
+<hr>
+
+Line in sisend on: <b><span id="line_in_state"></span></b>
+<form method="post">
+  <button name="line_in_activate" class="line_in_activate" id="line_in_activate">aktiveeri</button>
+  <button name="line_in_mute" class="line_in_mute" id="line_in_mute">vaigista</button>
+</form>
+
+<br>
+<form method="post">
+Line in sisendi helitugevus:
+<input type="range" name="line_in_range" min="0" step="10" max="100" onchange="updateLineVol(this.value);" value="<?php echo $line_vol; ?>">
+<input type="text" id="line_in_text" value="<?php echo $line_vol; ?>" readonly>
+<br>
+<input type="submit" value="Kinnita" />
+</form>
+
+
+<?php
+if (isset($_POST['start_melody_range'])) {
+	$volumeLevel = $_POST['start_melody_range'];
+	exec("bash $workDir/scripts/change_start_volume.sh $volumeLevel");
+	header("Refresh:0");
+}
+if (isset($_POST['end_melody_range'])) {
+	$volumeLevel = $_POST['end_melody_range'];
+	exec("bash $workDir/scripts/change_end_volume.sh $volumeLevel");
+	header("Refresh:0");
+}
+
+if (isset($_POST['line_in_range'])) {
+	$volumeLevel = $_POST['line_in_range'];
+	exec("bash $workDir/scripts/change_line_volume.sh $volumeLevel");
+	header("Refresh:0");
+}
+
+if (isset($_POST['line_in_activate'])) {
+	exec("bash $workDir/scripts/activate_line_in.sh");
+	header("Refresh:0");
+}
+
+if (isset($_POST['line_in_mute'])) {
+	exec("bash $workDir/scripts/mute_line_in.sh");
+	header("Refresh:0");
+}
+?>
+
+
+<script language="javascript">
+
+function updateSoundCheckVol(val) {
+	document.getElementById('sound_check_melody_text').value=val;
+}
+
+function updateStartVol(val) {
+	document.getElementById('start_melody_text').value=val;
+}
+
+function updateEndVol(val) {
+	document.getElementById('end_melody_text').value=val;
+}
+
+function updateLineVol(val) {
+	document.getElementById('line_in_text').value=val;
+}
+
+$(document).ready(function(){
+  setInterval(function(){
+    $.get("?page=line_in").done(function(data){
+      var json_data = JSON.parse(data);
+      if (json_data.state == "on"){
+        $("#line_in_state").html("aktiveeritud");
+      }
+      else {
+        $("#line_in_state").html("vaigistatud");
+      }
+
+    });
+  }, 1000);
+});
+
+</script>

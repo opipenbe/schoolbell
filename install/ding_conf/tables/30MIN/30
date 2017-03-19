@@ -1,0 +1,33 @@
+#Tunnid on 30-minutilised!
+57 07 * * * bash /home/schoolbell/ding_conf/scripts/master_high.sh
+58 07 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+00 08 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+30 08 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+31 08 * * * amixer -c 0 sset 'Line' unmute
+39 08 * * * amixer -c 0 sset 'Line' mute
+40 08 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+10 09 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+11 09 * * * amixer -c 0 sset 'Line' unmute
+19 09 * * * amixer -c 0 sset 'Line' mute
+20 09 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+50 09 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+51 09 * * * amixer -c 0 sset 'Line' unmute
+04 10 * * * amixer -c 0 sset 'Line' mute
+05 10 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+35 10 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+36 10 * * * amixer -c 0 sset 'Line' unmute
+49 10 * * * amixer -c 0 sset 'Line' mute
+50 10 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+20 11 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+21 11 * * * amixer -c 0 sset 'Line' unmute
+34 11 * * * amixer -c 0 sset 'Line' mute
+35 11 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+05 12 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+06 12 * * * amixer -c 0 sset 'Line' unmute
+14 12 * * * amixer -c 0 sset 'Line' mute
+15 12 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+45 12 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+46 12 * * * amixer -c 0 sset 'Line' unmute
+54 12 * * * amixer -c 0 sset 'Line' mute
+55 12 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+25 13 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100

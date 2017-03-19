@@ -1,0 +1,33 @@
+<form method="post">
+  <p>
+    <button name="stop_bell" id="stop_bell" class="stop_bell">Peata kell!</button>
+  </p>
+  <p>
+    <button name="alarm_on" id="alarm_on" class="alarm_off">Sireen sisse!</button>
+  </p>
+  <p>
+    <button name="alarm_off" id="alarm_off" class="alarm_off">Sireen välja!</button>
+  </p>
+</form>
+
+<?php
+  $schoolbellUser = exec("whoami");
+  $workDir = "/home/$schoolbellUser/ding_conf";
+
+  if (isset($_POST['stop_bell'])) {
+    exec("crontab -u $schoolbellUser $workDir/tables/0MIN/0 > /dev/null 2>&1");
+    exec("bash $workDir/scripts/mute_line_in.sh");
+    exec("kill -9 $(pidof mplayer)");
+  }
+
+  if (isset($_POST['alarm_on'])) {
+    exec("bash $workDir/scripts/master_high.sh");
+    exec("crontab -u $schoolbellUser $workDir/tables/0MIN/0 > /dev/null 2>&1");
+    exec("bash $workDir/scripts/mute_line_in.sh");
+    exec("kill -9 $(pidof mplayer)");
+    exec("mplayer -loop 0 $workDir/melodies/alarm.mp3 -volume 100 > /dev/null 2>&1 &");
+  }
+  if (isset($_POST['alarm_off'])) {
+  	exec("kill -9 $(pidof mplayer)");
+  }
+?>

@@ -1,0 +1,29 @@
+#Tunnid on 45-minutilised!
+50 07 * * * amixer sset 'PCM' 1000
+59 07 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+#1
+00 08 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+45 08 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+#2
+55 08 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+40 09 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+#3
+50 09 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+35 10 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+#4
+55 10 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+40 11 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+#5
+00 12 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+45 12 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+#6
+55 12 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+40 13 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+#7
+50 13 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+35 14 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+#8
+45 14 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+30 15 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 100
+
+

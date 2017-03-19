@@ -1,0 +1,70 @@
+
+Juhul kui eelnevalt seadistatud tundide režiim ei vasta hetkelistele vajadustele, siis saab ka edastada algus -ja lõppsignaale käsitsi. Rangelt soovitatav on eelnevalt seadistada tunnid "Tunde pole" olekusse.
+<br>
+<br>
+
+<?php
+
+  $schoolbellUser = exec("whoami");
+  $workDir = "/home/$schoolbellUser/ding_conf";
+  /*
+  $start_vol = exec("bash $workDir/scripts/start_volume.sh 2>&1");
+  $end_vol = exec("$workDir/scripts/end_volume.sh 2>&1");
+  */
+?>
+
+Kellaaeg: <b><span id="clock"></span></b>
+
+<form method="post">
+  <p>
+    <button name="start_melody" id="start_melody" class="start_melody">Algussignaal</button>
+  </p>
+  <p>
+    <button name="end_melody" id="end_melody" class="end_melody">Lõppsignaal</button>
+  </p>
+  <p>
+    <button name="stop_melody" id="stop_melody" class="stop_melody">Peata heli</button>
+  </p>
+</form>
+
+<?php
+  $schoolbellUser = exec("whoami");
+  $workDir = "/home/$schoolbellUser/ding_conf";
+
+  if (isset($_POST['start_melody'])) { // $start_vol
+    exec("mplayer $workDir/melodies/start.mp3 -volume 100 > /dev/null 2>&1 &");
+    header("Refresh:0");
+  }
+
+  if (isset($_POST['end_melody'])) { // $end_vol
+    exec("mplayer $workDir/melodies/end.mp3 -volume 100 > /dev/null 2>&1 &");
+    header("Refresh:0");
+  }
+
+  if (isset($_POST['stop_melody'])) {
+    exec("kill -9 $(pidof mplayer)");
+    header("Refresh:0");
+  }
+?>
+
+
+
+<script type="text/javascript"> // http://www.w3schools.com/js/tryit.asp?filename=tryjs_timing_clock
+function startTime() {
+  var today = new Date();
+  var h = today.getHours();
+  var m = today.getMinutes();
+  var s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('clock').innerHTML =
+  h + ":" + m + ":" + s;
+  var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+startTime();
+
+</script>

@@ -1,0 +1,7 @@
+#Tunnid on "erakorralised"
+# Kell 07 57 kontrollitakse, kas Master heliv2ljund t22tab
+57 07 * * * bash /home/schoolbell/ding_conf/scripts/master_high.sh
+58 07 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+00 08 * * * mplayer /home/schoolbell/ding_conf/melodies/start.mp3 -volume 100
+45 08 * * * mplayer /home/schoolbell/ding_conf/melodies/end.mp3 -volume 75
+

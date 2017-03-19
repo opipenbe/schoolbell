@@ -1,0 +1,60 @@
+<form method="post">
+<button name="45min">45-minutilised tunnid</button>
+<br>
+<br>
+<button name="35min">35-minutilised tunnid</button>
+<br>
+<br>
+<button name="30min">30-minutilised tunnid</button>
+<br>
+<br>
+<button name="custom">Erakorralised tunnid</button>
+<br>
+<br>
+<button name="0min">Tunde pole</button> (kell ei helise)
+</form>
+
+<br>
+
+<div id="table_state">
+Tundide seadistus:<b> <span id="table_state_value">
+</span></b>
+</div>
+
+<?php
+
+  $schoolbellUser = exec("whoami");
+  $workDir = "/home/$schoolbellUser/ding_conf";
+
+  if (isset($_POST['45min'])) {
+  	exec("crontab -u $schoolbellUser $workDir/tables/45MIN/45 > /dev/null 2>&1");
+    header("Refresh:0");
+  }
+  if (isset($_POST['35min'])) {
+  	exec("crontab -u $schoolbellUser $workDir/tables/35MIN/35 > /dev/null 2>&1");
+    header("Refresh:0");
+  }
+  if (isset($_POST['30min'])) {
+  	exec("crontab -u $schoolbellUser $workDir/tables/30MIN/30 > /dev/null 2>&1");
+    header("Refresh:0");
+  }
+  if (isset($_POST['0min'])) {
+    exec("crontab -u $schoolbellUser $workDir/tables/0MIN/0 > /dev/null 2>&1");
+    header("Refresh:0");
+  }
+  if (isset($_POST['custom'])) {
+    exec("crontab -u $schoolbellUser $workDir/tables/CUSTOM/CUSTOM > /dev/null 2>&1");
+    header("Refresh:0");
+  }
+?>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  setInterval(function(){
+    $.get("?page=table_state").done(function(data){
+      var json_data = JSON.parse(data);
+      $("#table_state_value").html(json_data.table_state);
+    });
+  }, 2000);
+});
+</script>
