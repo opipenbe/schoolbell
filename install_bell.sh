@@ -100,5 +100,4 @@ crontab -u root ./install/global/root_crontab
 #supervisorctl reread
 #supervisorctl update
 
-
-echo "Installation finished! Thank you for using Koolikell"
+echo "Installation finished!"
