@@ -5,7 +5,7 @@ read
 
 # Author: Olari Pipenberg
 
-# This script converts machine Debian-like machine for schoolbell application.
+# This script converts machine Debian-like machine into schoolbell application.
 # Prerequisites: Ubuntu 16.04+ or Debian 8+ like operating system, Internet access, atleast 2GB free memory (filesystem must be extended if you are using Raspberry PI).
 # Please read carefully this script before executing. You will be warned!
 
