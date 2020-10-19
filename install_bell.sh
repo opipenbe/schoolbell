@@ -1,13 +1,14 @@
 #!/bin/bash
 
-echo "Please read carefully this script before executing. If you have not read yet, press (CTRL + C). You will be warned! To begin press enter."
-read
-
 # Author: Olari Pipenberg
 
 # This script converts machine Debian-like machine into schoolbell application.
-# Prerequisites: Ubuntu 16.04+ or Debian 8+ like operating system, Internet access, atleast 2GB free memory (filesystem must be extended if you are using Raspberry PI).
+# Prerequisites: Tested with Debian 10 operating system, Internet access, atleast 2GB free memory (filesystem must be extended if you are using Raspberry PI).
 # Please read carefully this script before executing. You will be warned!
+
+
+echo "Please read carefully this script before executing. If you have not read yet, press (CTRL + C). You will be warned! To begin press enter."
+read
 
 # TODO fail2ban, error checks
 
@@ -17,8 +18,8 @@ if [ $"$EUID" -ne 0 ]; then
 fi
 
 # Install required packages
-apt-get update && 
-apt-get install -y alsa-utils pulseaudio mplayer apache2 php5 libapache2-mod-php5 fail2ban vim;
+apt update && 
+apt -y install alsa-utils pulseaudio mplayer apache2 php7.3 libapache2-mod-php fail2ban vim php-fpm
 
 if [ $? -ne 0 ]
 then
@@ -32,12 +33,18 @@ read
 
 # Set up account and configure sound
 echo "Lets create account for schoolbell user"
-useradd -s /bin/bash -d /home/schoolbell -m schoolbell -U
+groupadd -g 1050 schoolbell; useradd -g 1050 -u 1050 -s /bin/bash -d /home/schoolbell -m schoolbell
 echo "Password for schoolbell account:"
 passwd schoolbell
-adduser schoolbell audio # allow scholbell to play music
+usermod -aG audio schoolbell # allow scholbell to play music
+su - schoolbell -c "mkdir /home/schoolbell/.mplayer/" > /dev/null
 echo "softvol=true" >> /home/schoolbell/.mplayer/config
-amixer sset 'PCM' 1000
+chown schoolbell:schoolbell /home/schoolbell/.mplayer/config
+# make sure to disable either hdmi or 3.5 jack if using Raspberry PI
+/usr/bin/amixer -M -c 0 set 'Master' 80% /dev/null 2>&1
+/usr/bin/amixer -M -c 0 set 'Headphone' 80% /dev/null 2>&1
+/usr/bin/amixer -M -c 0 set 'Speaker' 80% /dev/null 2>&1
+/usr/bin/amixer -M -c 0 set 'PCM' 80% /dev/null 2>&1
 
 echo "Lets configure apache2. Press enter to begin:"
 read
