@@ -3,9 +3,8 @@
 # Author: Olari Pipenberg
 
 # This script converts machine Debian-like machine into schoolbell application.
-# Prerequisites: Tested with Debian 10 operating system, Internet access, atleast 2GB free memory (filesystem must be extended if you are using Raspberry PI).
-# Please read carefully this script before executing. You will be warned!
-
+# Prerequisites: Tested with Debian 10 operating system, Internet access, filesystem must be extended if you are using Raspberry PI.
+# Please read carefully this script before executing.
 
 echo "Please read carefully this script before executing. If you have not read yet, press (CTRL + C). You will be warned! To begin press enter."
 read
@@ -19,7 +18,7 @@ fi
 
 # Install required packages
 apt update && 
-apt -y install alsa-utils pulseaudio mplayer apache2 php7.3 libapache2-mod-php fail2ban vim php-fpm
+apt -y install alsa-utils pulseaudio mplayer apache2 fail2ban vim php-fpm php7.3
 
 if [ $? -ne 0 ]
 then
@@ -46,48 +45,22 @@ chown schoolbell:schoolbell /home/schoolbell/.mplayer/config
 /usr/bin/amixer -M -c 0 set 'Speaker' 80% /dev/null 2>&1
 /usr/bin/amixer -M -c 0 set 'PCM' 80% /dev/null 2>&1
 
-echo "Lets configure apache2. Press enter to begin:"
-read
-
-# Configure apache and HTTPS
-a2dissite 000-default # disable default apache site
-sed -i 's/www-data/schoolbell/g' /etc/apache2/envvars # change apache user
-mkdir -p /var/www/schoolbell/
-bash ./install/apache/gen_cert.sh schoolbell # TODO path
-cp schoolbell.crt /etc/ssl/certs/
-cp schoolbell.key /etc/ssl/private/
-rm schoolbell.* # TODO safer option
-cp ./install/apache/schoolbell.conf /etc/apache2/sites-available/
-a2enmod ssl rewrite
-
-echo "Lets configure HTACESS file. Press enter to begin:"
-read
-# Configure htaccess file
-htpasswd -c /etc/apache2/.htpasswd schoolbell
-cp -r ./install/apache/website/* /var/www/schoolbell/
-a2ensite schoolbell
-service apache2 restart
-
 echo "Lets configure schoolbell time. Press enter to begin:"
 read
 # Set correct time
 timedatectl set-ntp true # Synchronize time with ntp servers
-echo "Europe/Tallinn" > /etc/timezone # Set correct timezone for machine
-dpkg-reconfigure -f noninteractive tzdata
-service cron restart
+timedatectl set-timezone Europe/Tallinn
 
 # Fail2ban
 echo "Lets configure fail2ban. Press enter to begin:"
 read
 cp ./install/fail2ban/apache-parool.conf /etc/fail2ban/filter.d/
-service fail2ban restart
-
+systemctl restart fail2ban
 
 echo "Lets configure cronjob-predictor. Press enter to continue:"
 read
 apt-get install python-pip
 pip install croniter
-
 
 echo "Lets copy schoolbell configuration to /home/schoolbell. Press enter to continue:"
 read
@@ -98,13 +71,29 @@ echo "Finally lets add root crontab. Press Enter to continue:"
 read
 crontab -u root ./install/global/root_crontab
 
-# For remote assistance
-# Make sure you set coorect hostname and username in /root/create_tun.sh
+echo "Lets configure apache2. Press enter to begin:"
+read
+# Configure apache/php-fpm and HTTPS
+a2dissite 000-default # disable default apache site
+# php-fpm conf
+a2enmod alias proxy proxy_fcgi
+mkdir -p /var/www/schoolbell/
+bash ./install/apache/gen_cert.sh schoolbell # TODO path
+mv schoolbell.crt /etc/ssl/certs/
+mv schoolbell.key /etc/ssl/private/
+rm -f schoolbell.*
+a2enmod ssl rewrite
+cp ./install/apache/schoolbell-tls.conf /etc/apache2/sites-available/
+cp ./install/apache/schoolbell.conf /etc/apache2/sites-available/
+cp ./install/php-fpm/schoolbell.conf /etc/php/7.3/fpm/pool.d/
+systemctl restart php7.3-fpm
 
-#cp ./create_tun.sh /root/
-#apt-get install supervisor
-#cp /root/schoolbell/Koolikell/install/global/tunnel.conf /etc/supervisor/conf.d/
-#supervisorctl reread
-#supervisorctl update
+echo "Lets configure HTACESS file. Press enter to begin:"
+read
+# Configure htaccess file
+htpasswd -c /etc/apache2/.htpasswd schoolbell
+cp -r ./install/apache/website/* /var/www/schoolbell/
+a2ensite schoolbell schoolbell-tls
+systemctl restart apache2
 
 echo "Installation finished!"

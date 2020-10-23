@@ -24,12 +24,12 @@ export PASSPHRASE=$(head -c 500 /dev/urandom | tr -dc a-z0-9A-Z | head -c 128; e
 # Certificate details; replace items in angle brackets with your own info
 subj="
 C=EE
-ST=LV
-O=NETWORKS
-localityName=Tapa
+ST=Harju
+O=SampleOrg
+localityName=Tallinn
 commonName=$DOMAIN
 organizationalUnitName=main
-emailAddress=olari.pipenberg@gmail.com
+emailAddress=example@exampledomain.com
 "
 
 # Generate the server private key
