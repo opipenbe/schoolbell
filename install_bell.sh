@@ -18,7 +18,7 @@ fi
 
 # Install required packages
 apt update && 
-apt -y install alsa-utils pulseaudio mplayer apache2 fail2ban vim php-fpm php7.3
+apt -y install alsa-utils pulseaudio mplayer apache2 fail2ban vim php-fpm php7.3 libapache2-mod-authnz-external pwauth
 
 if [ $? -ne 0 ]
 then
@@ -78,20 +78,15 @@ a2dissite 000-default # disable default apache site
 # php-fpm conf
 a2enmod alias proxy proxy_fcgi
 mkdir -p /var/www/schoolbell/
-bash ./install/apache/gen_cert.sh schoolbell # TODO path
-mv schoolbell.crt /etc/ssl/certs/
-mv schoolbell.key /etc/ssl/private/
-rm -f schoolbell.*
 a2enmod ssl rewrite
 cp ./install/apache/schoolbell-tls.conf /etc/apache2/sites-available/
 cp ./install/apache/schoolbell.conf /etc/apache2/sites-available/
 cp ./install/php-fpm/schoolbell.conf /etc/php/7.3/fpm/pool.d/
 systemctl restart php7.3-fpm
 
-echo "Lets configure HTACESS file. Press enter to begin:"
+echo "Configure schoolbell account password, copy DocumentRoot files, restart apache2 unit. Press enter to begin:"
 read
-# Configure htaccess file
-htpasswd -c /etc/apache2/.htpasswd schoolbell
+passwd schoolbell
 cp -r ./install/apache/website/* /var/www/schoolbell/
 a2ensite schoolbell schoolbell-tls
 systemctl restart apache2
